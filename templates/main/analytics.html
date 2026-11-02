@@ -3,13 +3,52 @@
 {% block title %}Analytics{% endblock %}
 
 {% block content %}
-<section class="card">
-    <h2>Road Damage Analytics</h2>
-    <div class="stats-grid">
-        {% for item in stats %}
-        <div class="stat-box">
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.value }}</p>
+<section class="card page-header">
+    <div>
+        <p class="eyebrow">Operations overview</p>
+        <h2>Road Damage Analytics Dashboard</h2>
+    </div>
+    <p>Monitor complaint severity, workflow progress, and recent issues across the city.</p>
+</section>
+
+<section class="stats-grid">
+    {% for item in stats %}
+    <div class="stat-box">
+        <h3>{{ item.name }}</h3>
+        <p>{{ item.value }}</p>
+    </div>
+    {% endfor %}
+</section>
+
+<section class="dashboard-grid">
+    <div class="card chart-panel">
+        <h3>Status Distribution</h3>
+        {% for metric in status_breakdown %}
+        <div class="bar-row">
+            <div class="bar-label-wrap">
+                <span>{{ metric.label }}</span>
+                <strong>{{ metric.value }}</strong>
+            </div>
+            <div class="bar-track">
+                <div class="bar-fill status-{{ metric.label|slugify }}" style="width: {{ metric.percentage }}%;"></div>
+            </div>
+            <small>{{ metric.percentage }}%</small>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="card chart-panel">
+        <h3>Severity Breakdown</h3>
+        {% for metric in severity_breakdown %}
+        <div class="bar-row">
+            <div class="bar-label-wrap">
+                <span>{{ metric.label }}</span>
+                <strong>{{ metric.value }}</strong>
+            </div>
+            <div class="bar-track">
+                <div class="bar-fill severity-{{ metric.label|slugify }}" style="width: {{ metric.percentage }}%;"></div>
+            </div>
+            <small>{{ metric.percentage }}%</small>
         </div>
         {% endfor %}
     </div>
@@ -17,31 +56,33 @@
 
 <section class="card">
     <h2>Recent Complaint Overview</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Reporter</th>
-                <th>Road</th>
-                <th>Location</th>
-                <th>Severity</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for report in recent_reports %}
-            <tr>
-                <td>{{ report.reporter_name }}</td>
-                <td>{{ report.road_name }}</td>
-                <td>{{ report.location }}</td>
-                <td>{{ report.severity }}</td>
-                <td>{{ report.status }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5">No complaints available yet.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Reporter</th>
+                    <th>Road</th>
+                    <th>Location</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in recent_reports %}
+                <tr>
+                    <td>{{ report.reporter_name }}</td>
+                    <td>{{ report.road_name }}</td>
+                    <td>{{ report.location }}</td>
+                    <td>{{ report.severity }}</td>
+                    <td>{{ report.status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No complaints available yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </section>
 {% endblock %}

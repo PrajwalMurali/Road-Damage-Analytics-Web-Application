@@ -127,28 +127,96 @@ def approve_user(request, user_id):
 
 def analytics(request):
     reports = RoadDamageReport.objects.all()
+    total_reports = reports.count()
+    status_order = ["Pending", "In Progress", "Resolved"]
+    severity_order = ["Low", "Medium", "High"]
+
     data = [
-        {"name": "Total Reports", "value": reports.count()},
+        {"name": "Total Reports", "value": total_reports},
         {"name": "High Severity", "value": reports.filter(severity="High").count()},
         {"name": "Pending", "value": reports.filter(status="Pending").count()},
         {"name": "Resolved", "value": reports.filter(status="Resolved").count()},
     ]
+
+    status_breakdown = []
+    for status in status_order:
+        count = reports.filter(status=status).count()
+        percentage = round((count / total_reports) * 100) if total_reports else 0
+        status_breakdown.append({
+            "label": status,
+            "value": count,
+            "percentage": percentage,
+        })
+
+    severity_breakdown = []
+    for severity in severity_order:
+        count = reports.filter(severity=severity).count()
+        percentage = round((count / total_reports) * 100) if total_reports else 0
+        severity_breakdown.append({
+            "label": severity,
+            "value": count,
+            "percentage": percentage,
+        })
+
     recent_reports = reports.order_by("-reported_at")[:5]
-    return render(request, "main/analytics.html", {"stats": data, "recent_reports": recent_reports})
+    return render(
+        request,
+        "main/analytics.html",
+        {
+            "stats": data,
+            "recent_reports": recent_reports,
+            "status_breakdown": status_breakdown,
+            "severity_breakdown": severity_breakdown,
+        },
+    )
 
 
 def report(request):
-    reports = RoadDamageReport.objects.all().order_by("-reported_at")[:5]
+    reports = RoadDamageReport.objects.all().order_by("-reported_at")
+    total_reports = reports.count()
+    status_order = ["Pending", "In Progress", "Resolved"]
+
+    progress_cards = []
+    for status in status_order:
+        count = reports.filter(status=status).count()
+        percentage = round((count / total_reports) * 100) if total_reports else 0
+        progress_cards.append({
+            "label": status,
+            "value": count,
+            "percentage": percentage,
+        })
+
+    resolved_percentage = round((reports.filter(status="Resolved").count() / total_reports) * 100) if total_reports else 0
+    active_report_count = reports.filter(status="In Progress").count()
+    pending_report_count = reports.filter(status="Pending").count()
+
     report_items = []
-    for item in reports:
-        report_items.extend(
-            [
-                f"{item.road_name} reported by {item.reporter_name} ({item.severity} severity)",
-                f"Location: {item.location} | Status: {item.status}",
-                f"Issue type: {item.damage_type} | Date: {item.reported_at.date()}",
-            ]
+    for item in reports[:5]:
+        report_items.append(
+            {
+                "road_name": item.road_name,
+                "reporter_name": item.reporter_name,
+                "severity": item.severity,
+                "status": item.status,
+                "location": item.location,
+                "damage_type": item.damage_type,
+                "date": item.reported_at.date(),
+            }
         )
-    return render(request, "main/report.html", {"report_items": report_items, "reports": reports})
+
+    return render(
+        request,
+        "main/report.html",
+        {
+            "reports": reports[:5],
+            "report_items": report_items,
+            "progress_cards": progress_cards,
+            "resolved_percentage": resolved_percentage,
+            "active_report_count": active_report_count,
+            "pending_report_count": pending_report_count,
+            "total_reports": total_reports,
+        },
+    )
 
 
 @login_required

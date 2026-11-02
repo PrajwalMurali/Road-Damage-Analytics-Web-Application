@@ -3,38 +3,96 @@
 {% block title %}Report{% endblock %}
 
 {% block content %}
-<section class="card">
-    <h2>Latest Road Condition Report</h2>
-    <ul class="report-list">
-        {% for item in report_items %}
-        <li>{{ item }}</li>
+<section class="card page-header">
+    <div>
+        <p class="eyebrow">Progress tracker</p>
+        <h2>Road Condition Progress Report</h2>
+    </div>
+    <p>Track how many issues are pending, active, and resolved across all reported road damage cases.</p>
+</section>
+
+<section class="report-summary-grid">
+    <div class="summary-card accent">
+        <span>Total Reports</span>
+        <strong>{{ total_reports }}</strong>
+    </div>
+    <div class="summary-card">
+        <span>Resolved</span>
+        <strong>{{ resolved_percentage }}%</strong>
+    </div>
+    <div class="summary-card">
+        <span>In Progress</span>
+        <strong>{{ active_report_count }}</strong>
+    </div>
+    <div class="summary-card">
+        <span>Pending</span>
+        <strong>{{ pending_report_count }}</strong>
+    </div>
+</section>
+
+<section class="dashboard-grid">
+    <div class="card chart-panel">
+        <h3>Issue Progress</h3>
+        {% for metric in progress_cards %}
+        <div class="bar-row">
+            <div class="bar-label-wrap">
+                <span>{{ metric.label }}</span>
+                <strong>{{ metric.value }}</strong>
+            </div>
+            <div class="bar-track">
+                <div class="bar-fill status-{{ metric.label|slugify }}" style="width: {{ metric.percentage }}%;"></div>
+            </div>
+            <small>{{ metric.percentage }}%</small>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
+
+    <div class="card">
+        <h3>Latest Road Condition Updates</h3>
+        {% if report_items %}
+        <ul class="report-list">
+            {% for item in report_items %}
+            <li>
+                <div class="report-item-head">
+                    <strong>{{ item.road_name }}</strong>
+                    <span class="status-badge status-{{ item.status|slugify }}-badge">{{ item.status }}</span>
+                </div>
+                <p>{{ item.reporter_name }} • {{ item.location }}</p>
+                <p>{{ item.damage_type }} • {{ item.severity }} severity • {{ item.date }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No complaint data has been recorded yet.</p>
+        {% endif %}
+    </div>
 </section>
 
 <section class="card">
     <h2>Complaint Summary</h2>
     {% if reports %}
-    <table>
-        <thead>
-            <tr>
-                <th>Road</th>
-                <th>Damage</th>
-                <th>Severity</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for report in reports %}
-            <tr>
-                <td>{{ report.road_name }}</td>
-                <td>{{ report.damage_type }}</td>
-                <td>{{ report.severity }}</td>
-                <td>{{ report.status }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Road</th>
+                    <th>Damage</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                <tr>
+                    <td>{{ report.road_name }}</td>
+                    <td>{{ report.damage_type }}</td>
+                    <td>{{ report.severity }}</td>
+                    <td>{{ report.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% else %}
     <p>No complaint data has been recorded yet.</p>
     {% endif %}
