@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if complaint %}Update Complaint{% else %}Raise Complaint{% endif %}{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>{% if complaint %}Update Complaint{% else %}Raise Complaint{% endif %}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div>
+                <label for="reporter_name">Citizen Name</label><br>
+                <input type="text" id="reporter_name" name="reporter_name" value="{{ complaint.reporter_name|default:'' }}" required>
+            </div>
+            <div>
+                <label for="phone_number">Phone Number</label><br>
+                <input type="text" id="phone_number" name="phone_number" value="{{ complaint.phone_number|default:'' }}" required>
+            </div>
+            <div>
+                <label for="location">Location</label><br>
+                <input type="text" id="location" name="location" value="{{ complaint.location|default:'' }}" required>
+            </div>
+            <div>
+                <label for="road_name">Road Name</label><br>
+                <input type="text" id="road_name" name="road_name" value="{{ complaint.road_name|default:'' }}" required>
+            </div>
+            <div>
+                <label for="damage_type">Damage Type</label><br>
+                <input type="text" id="damage_type" name="damage_type" value="{{ complaint.damage_type|default:'' }}" required>
+            </div>
+            <div>
+                <label for="severity">Severity</label><br>
+                <select id="severity" name="severity">
+                    <option value="Low" {% if complaint and complaint.severity == 'Low' %}selected{% endif %}>Low</option>
+                    <option value="Medium" {% if complaint and complaint.severity == 'Medium' %}selected{% elif not complaint %}selected{% endif %}>Medium</option>
+                    <option value="High" {% if complaint and complaint.severity == 'High' %}selected{% endif %}>High</option>
+                </select>
+            </div>
+            <div>
+                <label for="status">Status</label><br>
+                <select id="status" name="status">
+                    <option value="Pending" {% if complaint and complaint.status == 'Pending' %}selected{% elif not complaint %}selected{% endif %}>Pending</option>
+                    <option value="In Progress" {% if complaint and complaint.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                    <option value="Resolved" {% if complaint and complaint.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                </select>
+            </div>
+            <div>
+                <label for="photo">Upload Evidence Photo</label><br>
+                <input type="file" id="photo" name="photo" accept="image/*">
+                {% if complaint and complaint.photo %}
+                    <p><small>Current photo: <a href="{{ complaint.photo.url }}" target="_blank">View</a></small></p>
+                {% endif %}
+            </div>
+            <div class="full-width">
+                <label for="description">Description</label><br>
+                <textarea id="description" name="description" rows="5" required>{{ complaint.description|default:'' }}</textarea>
+            </div>
+        </div>
+        <button type="submit" class="button">Save Complaint</button>
+        <a href="{% url 'complaint_list' %}" class="button secondary">Cancel</a>
+    </form>
+</section>
+{% endblock %}

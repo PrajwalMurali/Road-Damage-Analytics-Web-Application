@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Lab Project{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Web Technology Lab</h1>
+        <p>Simple Django project for learning</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
+            <li><a href="{% url 'analytics' %}" class="{% if '/analytics/' in request.path %}active{% endif %}">Analytics</a></li>
+            <li><a href="{% url 'report' %}" class="{% if '/report/' in request.path %}active{% endif %}">Reports</a></li>
+            {% if request.user.is_staff %}
+                <li><a href="{% url 'complaint_list' %}" class="{% if '/complaints/' in request.path %}active{% endif %}">Complaints</a></li>
+                <li><a href="{% url 'admin_dashboard' %}" class="{% if '/admin-dashboard/' in request.path %}active{% endif %}">Admin</a></li>
+            {% elif request.user.is_authenticated %}
+                <li><a href="{% url 'complaint_create' %}">Submit Complaint</a></li>
+            {% endif %}
+            {% if request.user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

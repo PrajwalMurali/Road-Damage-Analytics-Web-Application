@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Report{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>Latest Road Condition Report</h2>
+    <ul class="report-list">
+        {% for item in report_items %}
+        <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section class="card">
+    <h2>Complaint Summary</h2>
+    {% if reports %}
+    <table>
+        <thead>
+            <tr>
+                <th>Road</th>
+                <th>Damage</th>
+                <th>Severity</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td>{{ report.road_name }}</td>
+                <td>{{ report.damage_type }}</td>
+                <td>{{ report.severity }}</td>
+                <td>{{ report.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No complaint data has been recorded yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

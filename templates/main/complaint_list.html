@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Complaints{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>Road Damage Complaints</h2>
+    <a href="{% url 'complaint_create' %}" class="button">Raise New Complaint</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Citizen</th>
+                <th>Location</th>
+                <th>Road</th>
+                <th>Damage</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Proof</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for complaint in complaints %}
+            <tr>
+                <td>{{ complaint.reporter_name }}</td>
+                <td>{{ complaint.location }}</td>
+                <td>{{ complaint.road_name }}</td>
+                <td>{{ complaint.damage_type }}</td>
+                <td>{{ complaint.severity }}</td>
+                <td>{{ complaint.status }}</td>
+                <td>
+                    {% if complaint.photo %}
+                        <a href="{{ complaint.photo.url }}" target="_blank"><img src="{{ complaint.photo.url }}" alt="Complaint evidence" width="60" height="60" style="object-fit: cover; border-radius: 6px;"></a>
+                    {% else %}
+                        No photo
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'complaint_update' complaint.id %}">Edit</a> |
+                    <a href="{% url 'complaint_delete' complaint.id %}" onclick="return confirm('Delete this complaint?');">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No complaints have been reported yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

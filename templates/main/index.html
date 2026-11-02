@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="card hero">
+    <h2>Road Damage Reporting Portal</h2>
+    <p>This platform allows a common citizen to report broken roads, potholes, damaged roads, and traffic safety issues to the authorities.</p>
+    <p>Each complaint is stored as a public report and can be tracked through its status and severity.</p>
+    <a href="{% url 'complaint_create' %}" class="button">Raise Complaint</a>
+</section>
+
+<section class="card split">
+    <div>
+        <h3>Portal Features</h3>
+        <ul>
+            <li>Complaint reporting by citizens</li>
+            <li>Road location and damage type tracking</li>
+            <li>Status updates for each issue</li>
+            <li>Analytics for priority and severity</li>
+        </ul>
+    </div>
+    <div>
+        <h3>Goal</h3>
+        <p>To help citizens report road problems quickly and give authorities a clear overview of damages across the city.</p>
+    </div>
+</section>
+{% endblock %}

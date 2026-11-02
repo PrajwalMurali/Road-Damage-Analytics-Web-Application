@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>Admin Dashboard</h2>
+    <div class="stats-grid">
+        {% for item in stats %}
+        <div class="stat-box">
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.value }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="card">
+    <h2>Pending User Approvals</h2>
+    {% if pending_users %}
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profile in pending_users %}
+            <tr>
+                <td>{{ profile.user.username }}</td>
+                <td>{{ profile.user.email }}</td>
+                <td><a href="{% url 'approve_user' profile.user.id %}">Approve</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No pending user approvals.</p>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2>Recent Complaints</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Reporter</th>
+                <th>Road</th>
+                <th>Location</th>
+                <th>Severity</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in recent_reports %}
+            <tr>
+                <td>{{ report.reporter_name }}</td>
+                <td>{{ report.road_name }}</td>
+                <td>{{ report.location }}</td>
+                <td>{{ report.severity }}</td>
+                <td>{{ report.status }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No complaints available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
