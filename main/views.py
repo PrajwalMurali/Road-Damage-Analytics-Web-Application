@@ -77,8 +77,8 @@ def register_view(request):
             return render(request, "main/register.html", {"error": "That email is already registered."})
 
         user = User.objects.create_user(username=username, email=email, password=password1)
-        UserProfile.objects.create(user=user, is_approved=True)
-        messages.success(request, "Registration successful. You can now log in.")
+        UserProfile.objects.create(user=user, is_approved=False)
+        messages.success(request, "Registration successful. Awaiting admin approval.")
         return redirect("login")
 
     return render(request, "main/register.html")
