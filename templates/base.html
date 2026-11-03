@@ -27,8 +27,7 @@
             {% if request.user.is_authenticated %}
                 <li><a href="{% url 'logout' %}">Logout</a></li>
             {% else %}
-                <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'register' %}">Register</a></li>
+                <li><a href="{% url 'login' %}" class="{% if '/login/' in request.path %}active{% endif %}">Login</a></li>
             {% endif %}
         </ul>
     </nav>

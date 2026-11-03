@@ -3,32 +3,69 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<section class="card">
-    <h2>Login</h2>
-    {% if error %}
-        <p style="color: #b91c1c; font-weight: 600;">{{ error }}</p>
-    {% endif %}
+<section class="card auth-shell">
+    <div class="auth-visual">
+        <span class="eyebrow">Road Damage Portal</span>
+        <h2>Track civic issues faster.</h2>
+        <p>Log in to report potholes, follow complaint updates, and help your city respond to road damage with real-time visibility.</p>
 
-    <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{{ next }}">
-
-        <div class="form-grid">
+        <div class="auth-badges">
             <div>
-                <label for="username">Username</label><br>
-                <input type="text" id="username" name="username" required>
+                <strong>24/7</strong>
+                <span>Citizen reporting</span>
             </div>
             <div>
-                <label for="password">Password</label><br>
-                <input type="password" id="password" name="password" required>
+                <strong>Live</strong>
+                <span>Status tracking</span>
             </div>
         </div>
 
-        <button type="submit" class="button">Login</button>
-    </form>
+        <div class="auth-note">
+            <strong>Need a new account?</strong>
+            <a href="{% url 'register' %}" class="button secondary">Create account</a>
+        </div>
+    </div>
 
-    <p><a href="{% url 'register' %}">Create account</a> | <a href="{% url 'password_reset_request' %}">Forgot password?</a></p>
-    <p><strong>Admin access:</strong> login with a staff account</p>
-    <p><strong>Citizen access:</strong> login with a regular user account after admin approval</p>
+    <div class="auth-form-panel">
+        <div class="auth-header">
+            <span class="eyebrow">Welcome back</span>
+            <h3>Login to your account</h3>
+        </div>
+
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <div class="form-grid single-column">
+                <div>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+            </div>
+
+            <div class="auth-actions">
+                <button type="submit" class="button">Login</button>
+                <a href="{% url 'password_reset_request' %}" class="text-link">Forgot password?</a>
+            </div>
+        </form>
+
+        <div class="auth-switch">
+            <span>New here?</span>
+            <a href="{% url 'register' %}">Create a new account</a>
+        </div>
+
+        <div class="auth-access-notes">
+            <p><strong>Admin access:</strong> login with a staff account</p>
+            <p><strong>Citizen access:</strong> login with a regular user account after admin approval</p>
+        </div>
+    </div>
 </section>
 {% endblock %}
