@@ -19,8 +19,8 @@
     <nav>
         <ul>
             <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
-            <li><a href="{% url 'analytics' %}" class="{% if '/analytics/' in request.path %}active{% endif %}">Analytics</a></li>
-            <li><a href="{% url 'report' %}" class="{% if '/report/' in request.path %}active{% endif %}">Reports</a></li>
+            <li><a href="{% url 'analytics' %}" class="{% if '/analytics/' in request.path %}active{% endif %}">City Insights</a></li>
+            <li><a href="{% url 'report' %}" class="{% if '/report/' in request.path %}active{% endif %}">Maintenance Board</a></li>
             {% if request.user.is_staff %}
                 <li><a href="{% url 'complaint_list' %}" class="{% if '/complaints/' in request.path %}active{% endif %}">Complaints</a></li>
                 <li><a href="{% url 'admin_dashboard' %}" class="{% if '/admin-dashboard/' in request.path %}active{% endif %}">Admin</a></li>

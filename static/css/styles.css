@@ -351,6 +351,37 @@ tr:nth-child(even) td {
     margin-bottom: 8px;
 }
 
+.hotspot-list,
+.insight-list {
+    list-style: none;
+    margin-left: 0;
+    display: grid;
+    gap: 12px;
+}
+
+.hotspot-list li,
+.insight-list li {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.insight-list li {
+    display: block;
+    color: var(--text);
+    line-height: 1.5;
+}
+
+.hotspot-list strong {
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
 .status-badge {
     display: inline-block;
     padding: 5px 10px;

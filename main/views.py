@@ -141,9 +141,20 @@ def analytics(request):
     status_order = ["Pending", "In Progress", "Resolved"]
     severity_order = ["Low", "Medium", "High"]
 
+    high_severity = reports.filter(severity="High").count()
+    critical_areas = reports.values_list("location", flat=True)
+    hotspot_counts = {}
+    for area in critical_areas:
+        hotspot_counts[area] = hotspot_counts.get(area, 0) + 1
+
+    hotspot_areas = [
+        {"name": area, "count": count}
+        for area, count in sorted(hotspot_counts.items(), key=lambda item: item[1], reverse=True)[:3]
+    ]
+
     data = [
         {"name": "Total Reports", "value": total_reports},
-        {"name": "High Severity", "value": reports.filter(severity="High").count()},
+        {"name": "High Severity", "value": high_severity},
         {"name": "Pending", "value": reports.filter(status="Pending").count()},
         {"name": "Resolved", "value": reports.filter(status="Resolved").count()},
     ]
@@ -168,6 +179,16 @@ def analytics(request):
             "percentage": percentage,
         })
 
+    insights = []
+    if hotspot_areas:
+        top_area = hotspot_areas[0]
+        insights.append(f"{top_area['name']} records the highest number of road damage complaints with {top_area['count']} active cases.")
+    if high_severity:
+        insights.append(f"{high_severity} high-severity complaints need immediate action from the maintenance team.")
+    if total_reports:
+        resolved = reports.filter(status="Resolved").count()
+        insights.append(f"{round((resolved / total_reports) * 100)}% of all reported issues have already been resolved.")
+
     recent_reports = reports.order_by("-reported_at")[:5]
     return render(
         request,
@@ -177,6 +198,8 @@ def analytics(request):
             "recent_reports": recent_reports,
             "status_breakdown": status_breakdown,
             "severity_breakdown": severity_breakdown,
+            "hotspot_areas": hotspot_areas,
+            "insights": insights,
         },
     )
 
