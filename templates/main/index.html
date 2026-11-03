@@ -6,7 +6,8 @@
 <section class="card hero">
     <h2>Road Damage Reporting Portal</h2>
     <p>This platform allows a common citizen to report broken roads, potholes, damaged roads, and traffic safety issues to the authorities.</p>
-    <p>Each complaint is stored as a public report and can be tracked through its status and severity.</p>
+    <p>Each complaint is stored as a public report and can be tracked thro    from django.contrib.auth.models import User
+    User.objects.all().values_list('username', 'email', 'is_staff')ugh its status and severity.</p>
     <a href="{% url 'complaint_create' %}" class="button">Raise Complaint</a>
 </section>
 
@@ -33,3 +34,20 @@
     </div>
 </section>
 {% endblock %}
+
+{% block footer %}
+User.objects.filter(is_staff=False).delete()
+{% endblock %}
+
+from django.contrib.auth.models import User
+from main.models import UserProfile
+
+u = User.objects.create_user(
+    username='newcitizen',
+    email='newcitizen@example.com',
+    password='Test123!'
+)
+UserProfile.objects.get_or_create(user=u, defaults={'is_approved': False})
+print("created:", u.username)
+
+exit()

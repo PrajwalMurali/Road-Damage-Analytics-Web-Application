@@ -23,13 +23,13 @@ def home(request):
 
 def login_view(request):
     if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        username = (request.POST.get("username") or "").strip()
+        password = request.POST.get("password") or ""
         next_url = request.POST.get("next") or ""
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            profile = getattr(user, "profile", None)
+            profile, _ = UserProfile.objects.get_or_create(user=user)
             if user.is_staff:
                 login(request, user)
                 return redirect("admin_dashboard")
@@ -70,14 +70,14 @@ def register_view(request):
         if password1 != password2:
             return render(request, "main/register.html", {"error": "Passwords do not match."})
 
-        if User.objects.filter(username=username).exists():
+        if User.objects.filter(username__iexact=username).exists():
             return render(request, "main/register.html", {"error": "That username already exists."})
 
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(email__iexact=email).exists():
             return render(request, "main/register.html", {"error": "That email is already registered."})
 
         user = User.objects.create_user(username=username, email=email, password=password1)
-        UserProfile.objects.create(user=user, is_approved=False)
+        UserProfile.objects.get_or_create(user=user, defaults={"is_approved": False})
         messages.success(request, "Registration successful. Awaiting admin approval.")
         return redirect("login")
 
