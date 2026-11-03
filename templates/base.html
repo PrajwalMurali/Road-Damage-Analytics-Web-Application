@@ -4,31 +4,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
     <title>{% block title %}Lab Project{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/app.js' %}" defer></script>
 </head>
 <body>
-    <header class="{% if '/login/' in request.path or '/register/' in request.path %}auth-header{% endif %}">
-        <h1>Road Damage Report Analytics System</h1>
-        {% if not '/login/' in request.path and not '/register/' in request.path %}
-            <p>Citizen reporting and infrastructure monitoring</p>
-        {% endif %}
+    <header class="site-header {% if '/login/' in request.path or '/register/' in request.path %}auth-header{% endif %}">
+        <div class="container header-inner">
+            <h1>Road Damage Report Analytics System</h1>
+            {% if not '/login/' in request.path and not '/register/' in request.path %}
+                <p>Citizen reporting and infrastructure monitoring</p>
+            {% endif %}
+        </div>
     </header>
 
     {% if request.user.is_authenticated %}
-    <nav>
-        <ul>
-            <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
-            <li><a href="{% url 'analytics' %}" class="{% if '/analytics/' in request.path %}active{% endif %}">City Insights</a></li>
-            <li><a href="{% url 'report' %}" class="{% if '/report/' in request.path %}active{% endif %}">Maintenance Board</a></li>
-            {% if request.user.is_staff %}
-                <li><a href="{% url 'complaint_list' %}" class="{% if '/complaints/' in request.path %}active{% endif %}">Complaints</a></li>
-                <li><a href="{% url 'admin_dashboard' %}" class="{% if '/admin-dashboard/' in request.path %}active{% endif %}">Admin</a></li>
-            {% elif request.user.is_authenticated %}
-                <li><a href="{% url 'complaint_create' %}">Submit Complaint</a></li>
-            {% endif %}
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-        </ul>
+    <nav class="site-nav" aria-label="Primary navigation">
+        <div class="container nav-inner">
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul id="primary-nav" class="site-nav__list">
+                <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
+                <li><a href="{% url 'analytics' %}" class="{% if '/analytics/' in request.path %}active{% endif %}">City Insights</a></li>
+                <li><a href="{% url 'report' %}" class="{% if '/report/' in request.path %}active{% endif %}">Maintenance Board</a></li>
+                {% if request.user.is_staff %}
+                    <li><a href="{% url 'complaint_list' %}" class="{% if '/complaints/' in request.path %}active{% endif %}">Complaints</a></li>
+                    <li><a href="{% url 'admin_dashboard' %}" class="{% if '/admin-dashboard/' in request.path %}active{% endif %}">Admin</a></li>
+                {% elif request.user.is_authenticated %}
+                    <li><a href="{% url 'complaint_create' %}">Submit Complaint</a></li>
+                {% endif %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </div>
     </nav>
     {% endif %}
 
