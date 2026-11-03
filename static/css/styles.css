@@ -45,6 +45,15 @@ header h1 {
     letter-spacing: -0.04em;
 }
 
+header.auth-header {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+header.auth-header h1 {
+    font-size: clamp(1.8rem, 2vw, 2.5rem);
+}
+
 header p {
     color: rgba(255, 255, 255, 0.82);
     margin-top: 8px;

@@ -8,11 +8,14 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <header>
+    <header class="{% if '/login/' in request.path or '/register/' in request.path %}auth-header{% endif %}">
         <h1>Road Damage Report Analytics System</h1>
-        <p>Citizen reporting and infrastructure monitoring</p>
+        {% if not '/login/' in request.path and not '/register/' in request.path %}
+            <p>Citizen reporting and infrastructure monitoring</p>
+        {% endif %}
     </header>
 
+    {% if request.user.is_authenticated %}
     <nav>
         <ul>
             <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
@@ -24,13 +27,10 @@
             {% elif request.user.is_authenticated %}
                 <li><a href="{% url 'complaint_create' %}">Submit Complaint</a></li>
             {% endif %}
-            {% if request.user.is_authenticated %}
-                <li><a href="{% url 'logout' %}">Logout</a></li>
-            {% else %}
-                <li><a href="{% url 'login' %}" class="{% if '/login/' in request.path %}active{% endif %}">Login</a></li>
-            {% endif %}
+            <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
     </nav>
+    {% endif %}
 
     <main class="container">
         {% block content %}
