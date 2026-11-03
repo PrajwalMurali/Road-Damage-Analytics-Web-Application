@@ -19,7 +19,14 @@
             <li>Status updates for each issue</li>
             <li>Analytics for priority and severity</li>
         </ul>
-    </div>
+    </div>    from django.contrib.auth.models import User
+    from main.models import UserProfile
+    
+    user = User.objects.get(username="prajwalm2027@gmail.com")
+    profile, created = UserProfile.objects.get_or_create(user=user)
+    profile.is_approved = True
+    profile.save()
+    print("User approved")
     <div>
         <h3>Goal</h3>
         <p>To help citizens report road problems quickly and give authorities a clear overview of damages across the city.</p>
