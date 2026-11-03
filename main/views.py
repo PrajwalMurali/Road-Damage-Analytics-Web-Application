@@ -8,7 +8,16 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .models import RoadDamageReport, UserProfile
 
 
+@login_required
 def home(request):
+    if request.user.is_staff:
+        return render(request, "main/index.html")
+
+    profile = getattr(request.user, "profile", None)
+    if profile is None or not profile.is_approved:
+        logout(request)
+        return redirect("login")
+
     return render(request, "main/index.html")
 
 
@@ -45,7 +54,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect("home")
+    return redirect("login")
 
 
 def register_view(request):
@@ -125,6 +134,7 @@ def approve_user(request, user_id):
     return redirect("admin_dashboard")
 
 
+@login_required
 def analytics(request):
     reports = RoadDamageReport.objects.all()
     total_reports = reports.count()
@@ -171,6 +181,7 @@ def analytics(request):
     )
 
 
+@login_required
 def report(request):
     reports = RoadDamageReport.objects.all().order_by("-reported_at")
     total_reports = reports.count()
