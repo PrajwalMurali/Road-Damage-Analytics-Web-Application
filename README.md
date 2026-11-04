@@ -49,9 +49,10 @@ A Django-based web application for reporting and tracking road damage complaints
    pip install django pillow
    ```
 
-4. Run database migrations
+4. Run database migrations and create the default users
    ```bash
    python manage.py migrate
+   python manage.py create_default_users
    ```
 
 5. Start the development server
@@ -73,6 +74,8 @@ A Django-based web application for reporting and tracking road damage complaints
 ### Citizen
 - Username: `citizen`
 - Password: `citizen123`
+
+These accounts are created automatically when you run `python manage.py create_default_users`.
 
 ## User Workflow
 

@@ -263,14 +263,14 @@ def complaint_list(request):
 @login_required
 def complaint_create(request):
     if request.method == "POST":
-        reporter_name = request.POST.get("reporter_name")
-        phone_number = request.POST.get("phone_number")
-        location = request.POST.get("location")
-        road_name = request.POST.get("road_name")
-        damage_type = request.POST.get("damage_type")
-        severity = request.POST.get("severity")
-        description = request.POST.get("description")
-        status = request.POST.get("status")
+        reporter_name = (request.POST.get("reporter_name") or "").strip()
+        phone_number = (request.POST.get("phone_number") or "").strip()
+        location = (request.POST.get("location") or "").strip()
+        road_name = (request.POST.get("road_name") or "").strip()
+        damage_type = (request.POST.get("damage_type") or "").strip()
+        severity = request.POST.get("severity") or "Medium"
+        description = (request.POST.get("description") or "").strip()
+        status = request.POST.get("status") or "Pending"
         photo = request.FILES.get("photo")
 
         if reporter_name and phone_number and location and road_name and damage_type and description:
@@ -280,12 +280,15 @@ def complaint_create(request):
                 location=location,
                 road_name=road_name,
                 damage_type=damage_type,
-                severity=severity or "Medium",
+                severity=severity,
                 description=description,
-                status=status or "Pending",
+                status=status,
                 photo=photo,
             )
-            return redirect("complaint_list")
+            messages.success(request, "Complaint submitted successfully.")
+            if request.user.is_staff:
+                return redirect("complaint_list")
+            return redirect("home")
 
     return render(request, "main/complaint_form.html")
 
@@ -296,20 +299,21 @@ def complaint_update(request, id):
     complaint = get_object_or_404(RoadDamageReport, id=id)
 
     if request.method == "POST":
-        complaint.reporter_name = request.POST.get("reporter_name")
-        complaint.phone_number = request.POST.get("phone_number")
-        complaint.location = request.POST.get("location")
-        complaint.road_name = request.POST.get("road_name")
-        complaint.damage_type = request.POST.get("damage_type")
-        complaint.severity = request.POST.get("severity")
-        complaint.description = request.POST.get("description")
-        complaint.status = request.POST.get("status")
+        complaint.reporter_name = (request.POST.get("reporter_name") or "").strip()
+        complaint.phone_number = (request.POST.get("phone_number") or "").strip()
+        complaint.location = (request.POST.get("location") or "").strip()
+        complaint.road_name = (request.POST.get("road_name") or "").strip()
+        complaint.damage_type = (request.POST.get("damage_type") or "").strip()
+        complaint.severity = request.POST.get("severity") or complaint.severity
+        complaint.description = (request.POST.get("description") or "").strip()
+        complaint.status = request.POST.get("status") or complaint.status
 
         uploaded_photo = request.FILES.get("photo")
         if uploaded_photo:
             complaint.photo = uploaded_photo
 
         complaint.save()
+        messages.success(request, "Complaint updated successfully.")
         return redirect("complaint_list")
 
     return render(request, "main/complaint_form.html", {"complaint": complaint})
@@ -318,6 +322,10 @@ def complaint_update(request, id):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def complaint_delete(request, id):
+    if request.method != "POST":
+        return redirect("complaint_list")
+
     complaint = get_object_or_404(RoadDamageReport, id=id)
     complaint.delete()
+    messages.success(request, "Complaint deleted successfully.")
     return redirect("complaint_list")

@@ -38,7 +38,10 @@
                 </td>
                 <td>
                     <a href="{% url 'complaint_update' complaint.id %}">Edit</a> |
-                    <a href="{% url 'complaint_delete' complaint.id %}" onclick="return confirm('Delete this complaint?');">Delete</a>
+                    <form method="post" action="{% url 'complaint_delete' complaint.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="text-button" onclick="return confirm('Delete this complaint?');">Delete</button>
+                    </form>
                 </td>
             </tr>
             {% empty %}

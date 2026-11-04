@@ -57,7 +57,11 @@
             </div>
         </div>
         <button type="submit" class="button">Save Complaint</button>
-        <a href="{% url 'complaint_list' %}" class="button secondary">Cancel</a>
+        {% if request.user.is_staff %}
+            <a href="{% url 'complaint_list' %}" class="button secondary">Cancel</a>
+        {% else %}
+            <a href="{% url 'home' %}" class="button secondary">Cancel</a>
+        {% endif %}
     </form>
 </section>
 {% endblock %}
